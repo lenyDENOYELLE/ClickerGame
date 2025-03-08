@@ -9,6 +9,9 @@ class EnemyViewModel extends ChangeNotifier {
   late EnemyModel _enemy;
   bool fetchNewEnemy = true;
   int _level = 1;
+  EnemyViewModel(){
+    fetchEnemy();
+  }
 
   int get level => _enemy.level;
   int get totalLife => _enemy.totalLife;
@@ -35,8 +38,22 @@ class EnemyViewModel extends ChangeNotifier {
   void attackEnemy(int damage){
     _enemy.reduceLife(damage);
     if (_enemy.currentLife <= 0){
-      _level++;
+      nextEnemy();
     }
+    notifyListeners();
+  }
+
+  Image getImageEnemy(){
+    return Image.asset('assets/enemies/enemy_$_level.png');
+  }
+
+  Stack getBarreDeVie(){
+    double sizebar = 20;
+    double heightbar = 30;
+    return Stack(children: [
+      Container(height: heightbar, width: sizebar, color: Colors.grey,),
+      Container(height: heightbar, width: (_enemy.currentLife*100/sizebar), color: Colors.red,)
+    ],);
   }
 
 
