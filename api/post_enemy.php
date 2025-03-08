@@ -1,15 +1,21 @@
 <?php
 require_once('db.php');
 
-header('content-type: application/json');
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+// Définir les en-têtes CORS
+header('Access-Control-Allow-Origin: *'); // Autoriser toutes les origines
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS'); // Autoriser les méthodes GET, POST et OPTIONS
+header('Access-Control-Allow-Headers: Content-Type'); // Autoriser l'en-tête Content-Type
+header('Content-Type: application/json'); // Définir le type de contenu de la réponse
 
+// Gérer les requêtes OPTIONS (pré-vol)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    // Répondre uniquement avec les en-têtes CORS
+    exit;
+}
 
-// Autoriser seulement les requêtes POST
+// Vérifier que la méthode de la requête est POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
+    http_response_code(405); // Méthode non autorisée
     echo json_encode(["error" => "Méthode non autorisée"]);
     exit;
 }
@@ -17,12 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Lire et décoder les données JSON envoyées
 $data = json_decode(file_get_contents("php://input"), true);
 if (!$data) {
+    http_response_code(400); // Mauvaise requête
     echo json_encode(["error" => "Données JSON invalides"]);
     exit;
 }
 
 // Vérifier si l'action est définie
 if (!isset($data['action'])) {
+    http_response_code(400); // Mauvaise requête
     echo json_encode(["error" => "Aucune action spécifiée"]);
     exit;
 }
@@ -33,15 +41,17 @@ $response = [];
 try {
     switch ($action) {
         case "insert":
-            if (!isset($data['name'], $data['total_life'])) {
+            if (!isset($data['name'], $data['total_life'], $data['current_life'])) {
                 throw new Exception("Données insuffisantes pour l'insertion");
             }
 
-            $query = "INSERT INTO enemy (name, total_life) VALUES (:name, :total_life)";
+            $query = "INSERT INTO enemy (name, total_life, current_life) VALUES (:name, :total_life, :current_life)";
             $stmt = $db->prepare($query);
             $stmt->execute([
                 ':name' => htmlspecialchars(strip_tags($data['name'])),
-                ':total_life' => ($data['total_life'])
+                ':total_life' => ($data['total_life']),
+                ':current_life' => ($data['current_life'])
+
             ]);
 
 
@@ -63,6 +73,12 @@ try {
             if (!empty($data['total_life'])) {
                 $fields[] = "total_life = :total_life";
                 $params[':total_life'] = htmlspecialchars(strip_tags($data['total_life']));
+            }
+
+
+            if (isset($data['current_life'])) { // Vérifier si current_life est défini
+                $fields[] = "current_life = :current_life";
+                $params[':current_life'] = htmlspecialchars(strip_tags($data['current_life']));
             }
 
             if (empty($fields)) {

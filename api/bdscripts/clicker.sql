@@ -26,7 +26,7 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `buy`
 --
-
+DROP TABLE IF EXISTS `buy` cascade;
 CREATE TABLE `buy` (
   `id_player` int NOT NULL,
   `id_enhancement` int NOT NULL
@@ -45,30 +45,31 @@ INSERT INTO `buy` (`id_player`, `id_enhancement`) VALUES
 --
 -- Table structure for table `Enemy`
 --
-
+DROP TABLE IF EXISTS `enemy` cascade;
 CREATE TABLE `Enemy` (
   `level` int NOT NULL,
   `name` varchar(50) NOT NULL,
-  `total_life` int NOT NULL
+  `total_life` int NOT NULL,
+   `current_life` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `Enemy`
 --
 
-INSERT INTO `Enemy` (`level`, `name`, `total_life`) VALUES
-(1, 'blue slime', 10),
-(2, 'green slime', 20),
-(3, 'red slime', 30),
-(4, 'yellow slime', 40),
-(5, 'king slime', 50);
+INSERT INTO `Enemy` (`level`, `name`, `total_life`, `current_life`) VALUES
+(1, 'blue slime', 10, 10),
+(2, 'mean bat', 20, 20),
+(3, 'king slime', 30, 30),
+(4, 'wall titan', 40, 40),
+(5, 'jungle dragon', 50, 50);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `Enhancement`
 --
-
+DROP TABLE IF EXISTS `enhancement` cascade;
 CREATE TABLE `Enhancement` (
   `id_enhancement` int NOT NULL,
   `experience_cost` int NOT NULL,
@@ -91,19 +92,19 @@ INSERT INTO `Enhancement` (`id_enhancement`, `experience_cost`, `boost_value`, `
 --
 -- Table structure for table `Player`
 --
-
+DROP TABLE IF EXISTS `Player` cascade;
 CREATE TABLE `Player` (
   `id_player` int NOT NULL,
   `pseudo` varchar(50) NOT NULL,
   `total_experience` int NOT NULL,
-  `id_ennemy` int NOT NULL
+  `id_enemy` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `Player`
 --
 
-INSERT INTO `Player` (`id_player`, `pseudo`, `total_experience`, `id_ennemy`) VALUES
+INSERT INTO `Player` (`id_player`, `pseudo`, `total_experience`, `id_enemy`) VALUES
 (1, 'OmegaZell', 0, 1),
 (2, 'Sparadrap', 0, 1);
 
@@ -112,7 +113,7 @@ INSERT INTO `Player` (`id_player`, `pseudo`, `total_experience`, `id_ennemy`) VA
 --
 -- Table structure for table `Type_enhancement`
 --
-
+DROP TABLE IF EXISTS `Type_enhancement` cascade;
 CREATE TABLE `Type_enhancement` (
   `id_type` int NOT NULL,
   `name_type` varchar(5) NOT NULL
@@ -155,7 +156,7 @@ ALTER TABLE `Enhancement`
 --
 ALTER TABLE `Player`
   ADD PRIMARY KEY (`id_player`),
-  ADD KEY `Player_Level_ennemy_FK` (`id_ennemy`);
+  ADD KEY `Player_Level_enemy_FK` (`id_enemy`);
 
 --
 -- Indexes for table `Type_enhancement`
@@ -212,7 +213,7 @@ ALTER TABLE `Enhancement`
 -- Constraints for table `Player`
 --
 ALTER TABLE `Player`
-  ADD CONSTRAINT `Player_Level_ennemy_FK` FOREIGN KEY (`id_ennemy`) REFERENCES `Enemy` (`level`);
+  ADD CONSTRAINT `Player_Level_enemy_FK` FOREIGN KEY (`id_enemy`) REFERENCES `Enemy` (`level`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

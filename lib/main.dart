@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled1/views/game_view.dart';
 import 'core/config/config.dart';
 import 'viewmodels/user_viewmodel.dart';
-import 'views/home_view.dart';
-
 Future main() async {
   await Config.load();
   runApp(const MyApp());
@@ -24,7 +23,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const HomeView(),
+        home: const GameView(),
       ),
     );
   }
