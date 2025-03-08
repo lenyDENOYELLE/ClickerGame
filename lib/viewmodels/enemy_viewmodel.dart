@@ -48,11 +48,13 @@ class EnemyViewModel extends ChangeNotifier {
   }
 
   Stack getBarreDeVie(){
-    double sizebar = 20;
+    double sizebar = 500;
     double heightbar = 30;
-    return Stack(children: [
+    return Stack(
+      alignment: AlignmentDirectional.topStart,
+      children: [
       Container(height: heightbar, width: sizebar, color: Colors.grey,),
-      Container(height: heightbar, width: (_enemy.currentLife*100/sizebar), color: Colors.red,)
+      Container(height: heightbar, width: (_enemy.currentLife*sizebar/_enemy.totalLife), color: Colors.red,)
     ],);
   }
 
