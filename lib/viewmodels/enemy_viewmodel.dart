@@ -9,7 +9,10 @@ class EnemyViewModel extends ChangeNotifier {
   late EnemyModel _enemy;
   bool fetchNewEnemy = true;
   int _level = 1;
-  EnemyViewModel(){
+  EnemyViewModel({int? level}){
+    if (level != null){
+      _level = level;
+    }
     fetchEnemy();
   }
 

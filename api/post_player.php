@@ -33,16 +33,16 @@ $response = [];
 try {
     switch ($action) {
         case "insert":
-            if (!isset($data['pseudo'], $data['total_experience'], $data['id_ennemy'])) {
+            if (!isset($data['pseudo'], $data['total_experience'], $data['id_enemy'])) {
                 throw new Exception("Données insuffisantes pour l'insertion");
             }
 
-            $query = "INSERT INTO users (pseudo, total_experience, id_ennemy) VALUES (:pseudo, :total_experience, :id_ennemy)";
+            $query = "INSERT INTO player (pseudo, total_experience, id_enemy) VALUES (:pseudo, :total_experience, :id_enemy)";
             $stmt = $db->prepare($query);
             $stmt->execute([
                 ':pseudo' => htmlspecialchars(strip_tags($data['pseudo'])),
                 ':total_experience' => htmlspecialchars(strip_tags($data['total_experience'])),
-                ':id_ennemy' => htmlspecialchars(strip_tags($data['id_ennemy']))
+                ':id_enemy' => htmlspecialchars(strip_tags($data['id_enemy']))
             ]);
 
 
@@ -65,9 +65,9 @@ try {
                 $fields[] = "total_experience = :total_experience";
                 $params[':total_experience'] = htmlspecialchars(strip_tags($data['total_experience']));
             }
-            if (!empty($data['id_ennemy'])) {
-                $fields[] = "id_ennemy = :id_ennemy";
-                $params[':id_ennemy'] = htmlspecialchars(strip_tags($data['id_ennemy']));
+            if (!empty($data['id_enemy'])) {
+                $fields[] = "id_enemy = :id_enemy";
+                $params[':id_enemy'] = htmlspecialchars(strip_tags($data['id_enemy']));
             }
 
             if (empty($fields)) {
