@@ -28,7 +28,7 @@ class PlayerViewModel with ChangeNotifier {
     }
   }
 
-
+/*
   // Gagner de l'expérience
   Future<void> gainExperience(int experience) async {
     if (_player != null) {
@@ -43,7 +43,27 @@ class PlayerViewModel with ChangeNotifier {
       // Notifier les écouteurs
       notifyListeners();
     }
+  }*/
+
+  // Gagner de l'expérience
+  Future<void> gainExperience() async {
+    if (_player != null) {
+      // Mettre à jour localement
+      _player = _player!.copyWith(
+        totalExperience: _player!.totalExperience + player!.gainXp,
+      );
+
+      // Mettre à jour dans la base de données
+      await _playerService.updatePlayer(_player!);
+
+      // Notifier les écouteurs
+      notifyListeners();
+    }
   }
+
+
+
+
 
   // Insérer un nouveau joueur
   Future<void> insertPlayer(String pseudo, int totalExperience, int idEnnemy) async {
@@ -53,6 +73,7 @@ class PlayerViewModel with ChangeNotifier {
       totalExperience: totalExperience,
       idEnnemy: idEnnemy,
       damage: 1,
+      gainXp: 1,
     );
 
     await _playerService.insertPlayer(newPlayer);
@@ -93,4 +114,44 @@ class PlayerViewModel with ChangeNotifier {
     }
   }
 
+
+/*
+  Future<void> buyNextXpEnhancement() async {
+    if (_player != null) {
+      try {
+        // Acheter la prochaine amélioration de gain d'expérience via BuyService
+        final updatedPlayer = await _buyService.buyXpEnhancement(_player!.idPlayer);
+
+        // Mettre à jour le joueur localement
+        _player = updatedPlayer;
+        notifyListeners();
+      } catch (e) {
+        print('Erreur lors de l\'achat de l\'amélioration de gain d\'expérience: $e');
+        rethrow;
+      }
+    }
+  }
+*/
+
+
+  Future<void> buyNextXpEnhancement() async {
+    try {
+      // Acheter la prochaine amélioration de gain d'expérience via BuyService
+      final updatedPlayer = await _buyService.buyXpEnhancement(_player!.idPlayer);
+
+      // Mettre à jour le joueur localement
+      _player = updatedPlayer;
+      notifyListeners();
+/*
+        // Afficher un message de succès
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Amélioration de gain d\'XP achetée ! Gain XP: ${_player!.gainXp}')),
+        );*/
+    } catch (e) {/*
+        // Afficher un message d'erreur
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur: $e')),
+        );*/
+    }
+  }
 }

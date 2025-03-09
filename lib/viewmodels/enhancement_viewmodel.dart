@@ -28,4 +28,12 @@ class EnhancementViewModel with ChangeNotifier {
           (enhancement) => enhancement.id_type == 1, // 1 = DPS
     );
   }
+
+
+  // Récupérer la prochaine amélioration de gain d'expérience
+  Enhancement? getNextXpEnhancement() {
+    return _enhancements.firstWhere(
+          (enhancement) => enhancement.id_type == 2, // 2 = XP
+    );
+  }
 }

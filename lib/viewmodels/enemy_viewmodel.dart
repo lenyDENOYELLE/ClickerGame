@@ -235,7 +235,7 @@ class EnemyViewModel extends ChangeNotifier {
 
 
       // Donner de l'expérience au joueur
-      playerViewModel.gainExperience(1); // 1 point d'expérience par attaque
+      playerViewModel.gainExperience(); // 1 point d'expérience par attaque
 
       // Vérifier si l'ennemi est mort
       if (_enemy.currentLife <= 0) {

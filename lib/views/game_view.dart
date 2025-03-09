@@ -252,7 +252,7 @@ class GameView extends StatelessWidget {
 }
 */
 
-
+/* derniere version qui marche
 class GameView extends StatelessWidget {
   const GameView({super.key});
 
@@ -337,8 +337,10 @@ class GameView extends StatelessWidget {
     );
   }
 }
+*/
 
-/*
+
+/* obsolete
 class GameView extends StatelessWidget {
   const GameView({super.key});
 
@@ -423,3 +425,117 @@ class GameView extends StatelessWidget {
     );
   }
 }*/
+
+
+
+class GameView extends StatelessWidget {
+  const GameView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('ClickerGame'),
+        backgroundColor: Colors.lightBlue,
+        elevation: 0,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Afficher le pseudo, l'expérience et les dégâts du joueur en haut à gauche
+            Positioned(
+              top: 16,
+              left: 16,
+              child: Consumer<PlayerViewModel>(
+                builder: (context, playerViewModel, child) {
+                  if (playerViewModel.player != null) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Pseudo: ${playerViewModel.player!.pseudo}',
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                        Text(
+                          'Expérience: ${playerViewModel.player!.totalExperience}',
+                          style: const TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                        Text(
+                          'Dégâts: ${playerViewModel.player!.damage}',
+                          style: const TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                        Text(
+                          'Gain XP par clic: ${playerViewModel.player!.gainXp}',
+                          style: const TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return const Text('Chargement du joueur...', style: TextStyle(color: Colors.white));
+                  }
+                },
+              ),
+            ),
+
+            // Afficher l'ennemi au centre
+            const Center(
+              child: EnemyWidget(),
+            ),
+
+            // Bouton pour acheter une amélioration de DPS
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final playerViewModel = Provider.of<PlayerViewModel>(context, listen: false);
+
+                  try {
+                    await playerViewModel.buyNextEnhancement();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Amélioration achetée ! Dégâts: ${playerViewModel.player!.damage}')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Erreur: $e')),
+                    );
+                  }
+                },
+                child: Text('Acheter amélioration DPS'),
+              ),
+            ),
+
+            // Bouton pour acheter une amélioration de gain d'expérience
+            Positioned(
+              bottom: 16,
+              left: 16,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final playerViewModel = Provider.of<PlayerViewModel>(context, listen: false);
+
+                  try {
+                    await playerViewModel.buyNextXpEnhancement();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Amélioration de gain d\'expérience achetée ! Expérience: ${playerViewModel.player!.totalExperience}')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Erreur: $e')),
+                    );
+                  }
+                },
+                child: Text('Acheter amélioration XP'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
