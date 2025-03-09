@@ -57,11 +57,10 @@ class GameView extends StatelessWidget {
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled1/viewmodels/enemy_viewmodel.dart';
 import 'package:untitled1/viewmodels/player_viewmodel.dart';
 import 'package:untitled1/widgets/enemy_widget.dart';
 
-import '../viewmodels/enhancement_viewmodel.dart';
+
 
 /*
 class GameView extends StatelessWidget {
