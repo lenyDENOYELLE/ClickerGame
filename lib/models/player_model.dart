@@ -1,31 +1,46 @@
-class PlayerModel{
-  final int id_player;
+class Player {
+  final int idPlayer;
   final String pseudo;
-  final int total_experience;
-  final int id_enemy;
+  final int totalExperience;
+  final int damage;
+  final int idEnnemy;
+  final int gainXp; // Nouvel attribut pour le gain d'XP par clic
 
-  // Constructeur classique
-  PlayerModel({
-    required this.id_player,
+  Player({
+    required this.idPlayer,
     required this.pseudo,
-    required this.total_experience,
-    required this.id_enemy,
+    required this.totalExperience,
+    required this.damage,
+    required this.idEnnemy,
+    required this.gainXp, // Ajout du nouvel attribut
   });
 
-  /*
-   * Un factory en Flutter est un constructeur particulier qui permet
-   * de créer des objets en effectuant des traitements et
-   * des vérifications supplémentaires sur les paramètres
-   * avant l'instanciation de notre objet.
-   * Ici, on convertit les données Json de notre api en objet User
-   */
-  factory PlayerModel.fromJson(Map<String, dynamic> json) {
-    return PlayerModel(
-      id_player: json['id_player'] ?? 0,
-      pseudo: json['pseudo'] ?? '???',
-      total_experience: json['total_experience'] ?? '0',
-      id_enemy: json['id_enemy'] ?? '1',
+  factory Player.fromJson(Map<String, dynamic> json) {
+    return Player(
+      idPlayer: json['id_player'],
+      pseudo: json['pseudo'],
+      totalExperience: json['total_experience'],
+      damage: json['damage'],
+      idEnnemy: json['id_ennemy'],
+      gainXp: json['gain_xp'] ?? 1, // Valeur par défaut si non présente
     );
   }
 
+  Player copyWith({
+    int? idPlayer,
+    String? pseudo,
+    int? totalExperience,
+    int? damage,
+    int? idEnnemy,
+    int? gainXp, // Ajout du nouvel attribut dans copyWith
+  }) {
+    return Player(
+      idPlayer: idPlayer ?? this.idPlayer,
+      pseudo: pseudo ?? this.pseudo,
+      totalExperience: totalExperience ?? this.totalExperience,
+      damage: damage ?? this.damage,
+      idEnnemy: idEnnemy ?? this.idEnnemy,
+      gainXp: gainXp ?? this.gainXp, // Ajout du nouvel attribut
+    );
+  }
 }
