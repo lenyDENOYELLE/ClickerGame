@@ -1,86 +1,136 @@
-import '../../models/player_model.dart';
-import 'api_service.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:untitled1/models/player_model.dart';
+import '../config/config.dart';
 
 class PlayerService {
-  final ApiService apiService = ApiService();
 
-  /*---------------------*/
-  /* Lectures de données */
-  /*---------------------*/
 
-  /*
-  * Cette fonction permet de récupérer la liste complète des users
-  */
-  Future<List<PlayerModel>> getPlayers() async {
-    List<dynamic> data = await apiService.getRequest("get_player.php");
-    return data.map((user) => PlayerModel.fromJson(user)).toList();
-  }
+  Future<List<Player>?> getPlayers() async {
+    final url = Uri.parse('${Config.baseUrl}/get_player.php');
 
-  /*
-  * Cette fonction permet de récupérer un utilisateur par son id
-  */
-  Future<PlayerModel?> getPlayerById(int id_player) async {
-    Map<String, String> queryParams = {"id_player": id_player.toString()};
-    List<dynamic> data = await apiService.getRequest("get_player.php", queryParams: queryParams);
-    if (data.isNotEmpty) {
-      return PlayerModel.fromJson(data.first);
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final dynamic data = json.decode(response.body);
+
+        if (data != null && data.isNotEmpty) {
+          return data.map((user) => Player.fromJson(user)).toList(); // Retourner la liste de joueurs
+        }
+      } else {
+        print('Failed to load player: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching player: $e');
+      return null;
     }
-    return null;
   }
 
-  /*
-  * Cette fonction permet de récupérer un utilisateur par son nom
-  */
-  Future<List<PlayerModel>> getPlayerByLastname(String pseudo) async {
-    Map<String, String> queryParams = {"pseudo": Uri.encodeComponent(pseudo)};
-    List<dynamic> data = await apiService.getRequest("get_player.php", queryParams: queryParams);
-    return data.map((user) => PlayerModel.fromJson(user)).toList();
+
+  // Récupérer un joueur par son ID
+  Future<Player?> getPlayerById(int idPlayer) async {
+    final url = Uri.parse('${Config.baseUrl}/get_player.php?id_player=$idPlayer');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final dynamic data = json.decode(response.body);
+
+        if (data != null && data.isNotEmpty) {
+          return Player.fromJson(data[0]); // Retourner le premier joueur trouvé
+        } else {
+          print('No player found with id: $idPlayer');
+          return null;
+        }
+      } else {
+        print('Failed to load player: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching player: $e');
+      return null;
+    }
   }
 
-  /*
-   * Cette fonction est un exemple de récupération de données multi-filtre
-   */
-  Future<List<PlayerModel>> getPlayersByFilters({String? pseudo, int? id_player}) async {
-    Map<String, String> queryParams = {};
-    if (pseudo != null) queryParams['pseudo'] = Uri.encodeComponent(pseudo);
-    if (id_player != null) queryParams['id_player'] = id_player.toString();
+  // Insérer un nouveau joueur
+  Future<void> insertPlayer(Player player) async {
+    final url = Uri.parse('${Config.baseUrl}/post_player.php');
 
-    List<dynamic> data = await apiService.getRequest("get_player.php", queryParams: queryParams);
-    return data.map((userData) => PlayerModel.fromJson(userData)).toList();
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'action': 'insert',
+          'pseudo': player.pseudo,
+          'total_experience': player.totalExperience,
+          'id_ennemy': player.idEnnemy,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('Player inserted successfully');
+      } else {
+        print('Failed to insert player: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error inserting player: $e');
+    }
   }
 
-  /*---------------------*/
-  /* Ecriture de données */
-  /*---------------------*/
+  Future<void> updatePlayer(Player player) async {
+    final url = Uri.parse('${Config.baseUrl}/post_player.php');
 
-  // Cette méthode permet d'ajouter un nouvel utilisateur à la base
-  Future<void> insertPlayer(String pseudo) async {
-    await apiService.postRequest("post_player.php", {
-      "action": "insert",
-      "pseudo": pseudo,
-      "total_experience": 0,
-      "id_enemy": 1
-    });
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'action': 'update',
+          'id_player': player.idPlayer,
+          'pseudo': player.pseudo,
+          'total_experience': player.totalExperience, // Mettre à jour l'expérience
+          'id_ennemy': player.idEnnemy,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('Player updated successfully');
+      } else {
+        print('Failed to update player: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error updating player: $e');
+    }
   }
 
-  // Cette méthode permet de modifier un utilisateur par son id.
-  Future<void> updateUser(int id, {String? pseudo, String? total_experience, String? id_enemy}) async {
-    Map<String, dynamic> data = {
-      "action": "update",
-      "id_player": id.toString(),
-    };
-    if (pseudo != null) data["pseudo"] = pseudo;
-    if (total_experience != null) data["total_experience"] = total_experience;
-    if (id_enemy != null) data["id_enemy"] = id_enemy;
+  // Supprimer un joueur par son ID
+  Future<void> deletePlayer(int idPlayer) async {
+    final url = Uri.parse('${Config.baseUrl}/post_player.php');
 
-    await apiService.postRequest("post_player.php", data);
-  }
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'action': 'delete',
+          'id_player': idPlayer,
+        }),
+      );
 
-  // Cette méthode permet de supprimer un utilisateur par son id.
-  Future<void> deleteUser(int id) async {
-    await apiService.postRequest("post_player.php", {
-      "action": "delete",
-      "id_player": id.toString(),
-    });
+      if (response.statusCode == 200) {
+        print('Player deleted successfully');
+      } else {
+        print('Failed to delete player: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error deleting player: $e');
+    }
   }
 }

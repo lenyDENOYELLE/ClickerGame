@@ -1,15 +1,16 @@
 <?php
 require_once('db.php');
 
-header('content-type: application/json');
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+// Définir les en-têtes CORS
+header('Access-Control-Allow-Origin: *'); // Autoriser toutes les origines
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS'); // Autoriser les méthodes GET, POST et OPTIONS
+header('Access-Control-Allow-Headers: Content-Type'); // Autoriser l'en-tête Content-Type
+header('Content-Type: application/json'); // Définir le type de contenu de la réponse
 
 
-// Autoriser seulement les requêtes POST
+// Vérifier que la méthode de la requête est POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
+    http_response_code(405); // Méthode non autorisée
     echo json_encode(["error" => "Méthode non autorisée"]);
     exit;
 }
@@ -17,12 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Lire et décoder les données JSON envoyées
 $data = json_decode(file_get_contents("php://input"), true);
 if (!$data) {
+    http_response_code(400); // Mauvaise requête
     echo json_encode(["error" => "Données JSON invalides"]);
     exit;
 }
 
 // Vérifier si l'action est définie
 if (!isset($data['action'])) {
+    http_response_code(400); // Mauvaise requête
     echo json_encode(["error" => "Aucune action spécifiée"]);
     exit;
 }
@@ -61,7 +64,7 @@ try {
                 $fields[] = "pseudo = :pseudo";
                 $params[':pseudo'] = htmlspecialchars(strip_tags($data['pseudo']));
             }
-            if (!empty($data['total_experience'])) {
+            if (isset($data['total_experience'])) {
                 $fields[] = "total_experience = :total_experience";
                 $params[':total_experience'] = htmlspecialchars(strip_tags($data['total_experience']));
             }
