@@ -24,9 +24,9 @@
 	    $params[':total_experience'] = $_GET['total_experience'];
 	}
 
-	if (!empty($_GET['id_ennemy'])) {
-	    $query .= ' AND id_ennemy > :id_ennemy';
-	    $params[':id_ennemy'] = $_GET['id_ennemy'];
+	if (!empty($_GET['id_enemy'])) {
+	    $query .= ' AND id_enemy > :id_enemy';
+	    $params[':id_enemy'] = $_GET['id_enemy'];
 	}
 
 

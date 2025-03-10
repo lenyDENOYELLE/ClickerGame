@@ -4,7 +4,7 @@ class Player {
   final String pseudo;
   final int totalExperience;
   final int damage;
-  final int idEnnemy;
+  final int idEnemy;
   final int gainXp; // Nouvel attribut pour le gain d'XP par clic
 
   Player({
@@ -12,7 +12,7 @@ class Player {
     required this.pseudo,
     required this.totalExperience,
     required this.damage,
-    required this.idEnnemy,
+    required this.idEnemy,
     required this.gainXp, // Ajout du nouvel attribut
   });
 
@@ -22,7 +22,7 @@ class Player {
       pseudo: json['pseudo'],
       totalExperience: json['total_experience'],
       damage: json['damage'],
-      idEnnemy: json['id_ennemy'],
+      idEnemy: json['id_enemy'],
       gainXp: json['gain_xp'] ?? 1, // Valeur par défaut si non présente
     );
   }
@@ -32,7 +32,7 @@ class Player {
     String? pseudo,
     int? totalExperience,
     int? damage,
-    int? idEnnemy,
+    int? idEnemy,
     int? gainXp, // Ajout du nouvel attribut dans copyWith
   }) {
     return Player(
@@ -40,7 +40,7 @@ class Player {
       pseudo: pseudo ?? this.pseudo,
       totalExperience: totalExperience ?? this.totalExperience,
       damage: damage ?? this.damage,
-      idEnnemy: idEnnemy ?? this.idEnnemy,
+      idEnemy: idEnemy ?? this.idEnemy,
       gainXp: gainXp ?? this.gainXp, // Ajout du nouvel attribut
     );
   }

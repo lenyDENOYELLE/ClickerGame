@@ -5,7 +5,7 @@ import '../../viewmodels/player_liste_viewmodel.dart';
 
 class PlayerForm extends StatefulWidget {
   final PlayerListViewModel viewModel;
-  final PlayerModel? user;
+  final Player? user;
 
   const PlayerForm({super.key, required this.viewModel, this.user});
 
@@ -22,8 +22,8 @@ class PlayerFormState extends State<PlayerForm> {
   void initState() {
     super.initState();
     pseudoController = TextEditingController(text: widget.user?.pseudo ?? '');
-    expController = TextEditingController(text: widget.user?.total_experience.toString() ?? '');
-    levelController = TextEditingController(text: widget.user?.id_enemy.toString() ?? '');
+    expController = TextEditingController(text: widget.user?.totalExperience.toString() ?? '');
+    levelController = TextEditingController(text: widget.user?.idEnemy.toString() ?? '');
   }
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class PlayerFormState extends State<PlayerForm> {
                 );
               } else {
                 widget.viewModel.updateUser(
-                  widget.user!.id_player,
+                  widget.user!.idPlayer,
                   pseudo: pseudoController.text,
                   total_experience: expController.text,
                   id_enemy: levelController.text,

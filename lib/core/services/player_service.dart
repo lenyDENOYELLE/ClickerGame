@@ -13,11 +13,9 @@ class PlayerService {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        final dynamic data = json.decode(response.body);
-
-        if (data != null && data.isNotEmpty) {
-          return data.map((user) => Player.fromJson(user)).toList(); // Retourner la liste de joueurs
-        }
+        List<dynamic> data = json.decode(response.body);
+        print(data);
+        return data.map((user) => Player.fromJson(user)).toList(); // Retourner la liste de joueurs
       } else {
         print('Failed to load player: ${response.statusCode}');
         return null;
@@ -56,7 +54,7 @@ class PlayerService {
   }
 
   // Insérer un nouveau joueur
-  Future<void> insertPlayer(Player player) async {
+  Future<void> insertPlayer(pseudo) async {
     final url = Uri.parse('${Config.baseUrl}/post_player.php');
 
     try {
@@ -65,9 +63,9 @@ class PlayerService {
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'action': 'insert',
-          'pseudo': player.pseudo,
-          'total_experience': player.totalExperience,
-          'id_ennemy': player.idEnnemy,
+          'pseudo': pseudo,
+          'total_experience': 0,
+          'id_enemy': 1,
         }),
       );
 
@@ -82,20 +80,23 @@ class PlayerService {
     }
   }
 
-  Future<void> updatePlayer(Player player) async {
+  Future<void> updatePlayer(int id,
+      {String? pseudo, String? total_experience, String? id_enemy, }) async {
     final url = Uri.parse('${Config.baseUrl}/post_player.php');
+    Map<String, dynamic> data = {
+      'action': 'update',
+      'id_player': id,
+    };
+
+    if (pseudo != null) data["pseudo"] = pseudo;
+    if (total_experience != null) data["total_experience"] = total_experience;
+    if (id_enemy != null) data["id_enemy"] = id_enemy;
 
     try {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'action': 'update',
-          'id_player': player.idPlayer,
-          'pseudo': player.pseudo,
-          'total_experience': player.totalExperience, // Mettre à jour l'expérience
-          'id_ennemy': player.idEnnemy,
-        }),
+        body: json.encode(data),
       );
 
       if (response.statusCode == 200) {

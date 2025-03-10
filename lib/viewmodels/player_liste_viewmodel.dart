@@ -4,18 +4,18 @@ import '../core/services/user_service.dart';
 import '../models/player_model.dart';
 class PlayerListViewModel extends ChangeNotifier {
   final PlayerService _userRequest = PlayerService();
-  List<PlayerModel> _users = [];
+  List<Player> _users = [];
   bool _isLoading = false;
   String _error = '';
 
-  List<PlayerModel> get users => _users;
+  List<Player> get users => _users;
 
   // La variable isLoading nous permet de mettre un état de chargement de nos données en attendant qu'elles s'affichent.
   bool get isLoading => _isLoading;
   String get errorMessage => _error;
 
-  List<PlayerModel> _filteredUsers = [];
-  List<PlayerModel> get filteredUsers => _filteredUsers;
+  List<Player> _filteredUsers = [];
+  List<Player> get filteredUsers => _filteredUsers;
 
   /*---------------------*/
   /* Lectures de données */
@@ -26,7 +26,10 @@ class PlayerListViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _users = await _userRequest.getPlayers();
+      List<Player>? players = await _userRequest.getPlayers();
+      if (players != null){
+        _users = players;
+      }
       _filteredUsers = List.from(_users);
     } catch (e) {
       _error = e.toString();
@@ -42,7 +45,7 @@ class PlayerListViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _users = await _userRequest.getPlayerById(id) as List<PlayerModel>;
+      _users = await _userRequest.getPlayerById(id) as List<Player>;
     } catch (e) {
       _error = e.toString();
     }
@@ -50,14 +53,14 @@ class PlayerListViewModel extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
-
+/*
   Future<void> fetchUsersByLastname(String pseudo) async {
     _isLoading = true;
     _error = '';
     notifyListeners();
 
     try {
-      _users = await _userRequest.getPlayerByLastname(pseudo);
+      _users = await _userRequest.getPlayer; //YA PAS DE CHERCHE BY PSEUDO
     } catch (e) {
       _error = e.toString();
     }
@@ -65,6 +68,7 @@ class PlayerListViewModel extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+ */
 
   void filterUsers(String query) {
     if (query.isEmpty) {
@@ -72,8 +76,7 @@ class PlayerListViewModel extends ChangeNotifier {
     } else {
       _filteredUsers = _users
           .where((user) =>
-      user.pseudo.toLowerCase().contains(query.toLowerCase()) ||
-          user.id_player.toString().contains(query.toLowerCase()))
+          user.toString().contains(query.toLowerCase()))
           .toList();
     }
     notifyListeners();
@@ -97,7 +100,7 @@ class PlayerListViewModel extends ChangeNotifier {
   /* Méthode qui permet de modifier des données en base */
   Future<void> updateUser(int id, {String? pseudo, String? total_experience, String? id_enemy}) async {
     try {
-      await _userRequest.updateUser(id, pseudo: pseudo, total_experience: total_experience, id_enemy: id_enemy);
+      await _userRequest.updatePlayer(id, pseudo: pseudo, total_experience: total_experience, id_enemy: id_enemy);
       await fetchUsers();
     } catch (e) {
       _error = e.toString();
@@ -108,7 +111,7 @@ class PlayerListViewModel extends ChangeNotifier {
   /* Méthode qui permet de supprimer des données en base */
   Future<void> deleteUser(int id) async {
     try {
-      await _userRequest.deleteUser(id);
+      await _userRequest..deletePlayer(id);
       await fetchUsers();
     } catch (e) {
       _error = e.toString();

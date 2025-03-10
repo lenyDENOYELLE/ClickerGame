@@ -13,7 +13,22 @@ class PlayerViewModel with ChangeNotifier {
   Player? get player => _player;
 
   PlayerViewModel(){
-    fetchPlayerById(1);
+  }
+
+  void initJoueur(int id){
+    fetchPlayerById(id);
+  }
+
+  bool joueurActif(){
+    return _player != null;
+  }
+
+  String? getPseudo(){
+    return _player?.pseudo;
+  }
+
+  int? getLevel(){
+    return _player?.idEnemy;
   }
 
   // Récupérer un joueur par son ID
@@ -56,38 +71,22 @@ class PlayerViewModel with ChangeNotifier {
       );
 
       // Mettre à jour dans la base de données
-      await _playerService.updatePlayer(_player!);
+      await _playerService.
+      updatePlayer(_player!.idPlayer, total_experience: _player?.totalExperience.toString());
 
       // Notifier les écouteurs
       notifyListeners();
     }
   }
-
-
-
-
-
-  // Insérer un nouveau joueur
-  Future<void> insertPlayer(String pseudo, int totalExperience, int idEnnemy) async {
-    final newPlayer = Player(
-      idPlayer: 0, // L'ID sera généré par la base de données
-      pseudo: pseudo,
-      totalExperience: totalExperience,
-      idEnnemy: idEnnemy,
-      damage: 1,
-      gainXp: 1,
-    );
-
-    await _playerService.insertPlayer(newPlayer);
-    notifyListeners(); // Notifier les écouteurs que l'état a changé
-  }
-
+/*
   // Mettre à jour un joueur existant
   Future<void> updatePlayer(Player player) async {
-    await _playerService.updatePlayer(player);
+    await _playerService.updatePlayer(
+        player.idPlayer,
+        total_experience: player.totalExperience.toString(), pseudo: );
     notifyListeners(); // Notifier les écouteurs que l'état a changé
   }
-
+*/
   // Supprimer un joueur par son ID
   Future<void> deletePlayer(int idPlayer) async {
     await _playerService.deletePlayer(idPlayer);
@@ -115,10 +114,6 @@ class PlayerViewModel with ChangeNotifier {
       }
     }
   }
-
-  }
-
-
   Future<void> buyNextXpEnhancement() async {
     try {
       // Acheter la prochaine amélioration de gain d'expérience via BuyService

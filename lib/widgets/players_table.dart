@@ -6,8 +6,8 @@ import 'package:untitled1/viewmodels/player_viewmodel.dart';
 import '../models/player_model.dart';
 
 class PlayersTable extends StatelessWidget {
-  final List<PlayerModel> users;
-  final Function(PlayerModel) onEdit;
+  final List<Player> users;
+  final Function(Player) onEdit;
   final Function(int) onDelete;
 
   const PlayersTable({
@@ -33,11 +33,11 @@ class PlayersTable extends StatelessWidget {
           DataCell(
               Text(user.pseudo),
               onTap: () => {
-                joueur.initJoueur(user)
+                joueur.initJoueur(user.idPlayer)
               }
           ),
-          DataCell(Text(user.total_experience.toString())),
-          DataCell(Text(user.id_enemy.toString())),
+          DataCell(Text(user.totalExperience.toString())),
+          DataCell(Text(user.idEnemy.toString())),
           DataCell(Row(
             children: [
               IconButton(
@@ -46,7 +46,7 @@ class PlayersTable extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () => onDelete(user.id_player),
+                onPressed: () => onDelete(user.idPlayer),
               ),
             ],
           )),

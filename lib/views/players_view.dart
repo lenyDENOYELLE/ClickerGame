@@ -78,7 +78,7 @@ class _PlayerViewState extends State<PlayerView> {
                       scrollDirection: Axis.horizontal,
                       child: PlayersTable(
                         users: viewModel.filteredUsers,
-                        onEdit: (Player) => _showPlayerForm(context, viewModel, Player: Player),
+                        onEdit: (Player) => _showPlayerForm(context, viewModel, player: Player),
                         onDelete: (PlayerId) => _confirmDelete(context, viewModel, PlayerId),
                       ),
                     ),
@@ -93,11 +93,11 @@ class _PlayerViewState extends State<PlayerView> {
   }
 
   // Modale pour ajouter / modifier un utilisateur
-  void _showPlayerForm(BuildContext context, PlayerListViewModel viewModel, {PlayerModel? Player}) {
+  void _showPlayerForm(BuildContext context, PlayerListViewModel viewModel, {Player? player}) {
     showDialog(
       context: context,
       builder: (context) {
-        return PlayerForm(viewModel: viewModel, user: Player);
+        return PlayerForm(viewModel: viewModel, user: player);
       },
     );
   }

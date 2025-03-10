@@ -1,4 +1,4 @@
-/*
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled1/viewmodels/game_viewmodel.dart';
@@ -7,6 +7,7 @@ import 'package:untitled1/views/game_view.dart';
 import 'package:untitled1/views/players_view.dart';
 import 'package:untitled1/viewmodels/player_liste_viewmodel.dart';
 import 'core/config/config.dart';
+import 'package:untitled1/viewmodels/enhancement_viewmodel.dart';
 import 'viewmodels/user_viewmodel.dart';
 Future main() async {
   await Config.load();
@@ -26,7 +27,10 @@ class MyApp extends StatelessWidget {
     final joueur = context.watch<GameViewModel>();
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => joueur.enemyViewModel),
+        ChangeNotifierProvider(create: (context) => joueur.player),
         ChangeNotifierProvider(create: (context) => PlayerListViewModel()),
+        ChangeNotifierProvider(create: (context) => EnhancementViewModel())
       ],
       child: MaterialApp(
         title: 'Clicker',
@@ -39,7 +43,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
- */
 
 /*
 import 'package:flutter/material.dart';
@@ -117,7 +120,7 @@ class MyApp extends StatelessWidget {
 
 
 
-
+/*
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled1/views/game_view.dart';
@@ -153,3 +156,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+*/

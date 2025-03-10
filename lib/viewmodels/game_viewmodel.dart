@@ -9,11 +9,11 @@ class GameViewModel extends ChangeNotifier{
 
 
   void initEnemy(){
-    enemyViewModel = EnemyViewModel(level: player.level());
+    enemyViewModel = EnemyViewModel(level: player.getLevel());
   }
 
-  void initJoueur(PlayerModel p){
-    player.initJoueur(p);
+  void initJoueur(int id){
+    player.initJoueur(id);
     initEnemy();
     notifyListeners();
   }
