@@ -19,10 +19,10 @@ class Player {
   factory Player.fromJson(Map<String, dynamic> json) {
     return Player(
       idPlayer: json['id_player'],
-      pseudo: json['pseudo'],
-      totalExperience: json['total_experience'],
-      damage: json['damage'],
-      idEnemy: json['id_enemy'],
+      pseudo: json['pseudo'] ?? '',
+      totalExperience: json['total_experience'] ?? 1,
+      damage: json['damage'] ?? 1,
+      idEnemy: json['id_enemy'] ?? 1,
       gainXp: json['gain_xp'] ?? 1, // Valeur par défaut si non présente
     );
   }
